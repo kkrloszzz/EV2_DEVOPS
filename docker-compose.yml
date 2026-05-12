@@ -1,0 +1,124 @@
+version: "3.9"
+
+services:
+
+ # ── BASE DE DATOS ─────────────────────────────────────────
+
+ db:
+  image: mysql:8.0
+  container_name: mysql_db
+  
+  environment:
+
+   MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+   MYSQL_DATABASE: ${MYSQL_DATABASE}
+   MYSQL_USER: ${MYSQL_USER}
+   MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+  volumes:
+
+   - mysql_data:/var/lib/mysql
+
+  healthcheck:
+
+   test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+   interval: 10s
+   timeout: 5s
+   retries: 10
+
+  restart: unless-stopped
+
+  networks:
+
+   - app_net
+
+ # ── BACKEND (Spring Boot) ─────────────────────────────────
+
+ backend:
+
+  build:
+   context: ./backend
+   dockerfile: Dockerfile
+  image: innovatech-backend:latest
+
+  container_name: backend_app
+
+  ports:
+
+   - "8080:8080"
+
+  environment:
+
+   SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+   SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+   SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+   SPRING_JPA_HIBERNATE_DDL_AUTO: update
+  
+  depends_on:
+   db:
+    condition: service_healthy
+  restart: unless-stopped
+
+  networks:
+   - app_net
+
+
+
+ # ── FRONTEND (React + Nginx) ──────────────────────────────
+
+ frontend:
+
+  build:
+
+   context: ./frontend
+   dockerfile: Dockerfile
+  image: innovatech-frontend:latest
+  
+  container_name: frontend_app
+  ports:
+
+   - "80:80"
+
+  environment:
+
+   VITE_API_URL: http://backend:8080/api
+
+  depends_on:
+
+   - backend
+
+  restart: unless-stopped
+
+  networks:
+
+   - app_net
+
+
+
+# ── VOLÚMENES ─────────────────────────────────────────────────
+
+# Named volume: los datos de MySQL persisten aunque el contenedor se elimine o reinicie.
+
+# Se elige named volume por sobre bind mount porque Docker gestiona la ubicación
+
+# automáticamente y es más portable entre entornos (local, EC2, CI/CD).
+
+volumes:
+
+ mysql_data:
+
+  driver: local
+
+
+
+# ── REDES ─────────────────────────────────────────────────────
+
+# Red interna bridge: los servicios se comunican por nombre de contenedor
+
+# sin exponer puertos innecesarios al exterior.
+
+networks:
+
+ app_net:
+
+  driver: bridge
