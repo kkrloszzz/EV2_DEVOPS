@@ -1,6 +1,3 @@
-# ============================================================
-# modules/security_groups/variables.tf
-# ============================================================
 
 variable "project_name" {
   description = "Nombre del proyecto"

@@ -1,6 +1,3 @@
-# ============================================================
-# modules/vpc/variables.tf
-# ============================================================
 
 variable "project_name" {
   description = "Nombre del proyecto"

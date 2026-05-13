@@ -1,6 +1,3 @@
-# ============================================================
-# modules/ec2/outputs.tf
-# ============================================================
 
 output "frontend_instance_id" {
   description = "ID de la instancia EC2 Frontend"

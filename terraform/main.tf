@@ -1,8 +1,3 @@
-# ============================================================
-# main.tf — Infraestructura EP1 Innovatech Chile
-# ISY1101 - Introducción a Herramientas DevOps
-# Región: us-east-1 (N. Virginia)
-# ============================================================
 
 terraform {
   required_version = ">= 1.0.0"
@@ -23,7 +18,7 @@ provider "aws" {
 # MÓDULO: VPC + Subnets + Internet Gateway + Route Tables
 # ============================================================
 module "vpc" {
-  source = "./modules/vpc"
+  source = "./vpc"
 
   project_name        = var.project_name
   vpc_cidr            = var.vpc_cidr
@@ -36,7 +31,7 @@ module "vpc" {
 # MÓDULO: Security Groups
 # ============================================================
 module "security_groups" {
-  source = "./modules/security_groups"
+  source = "./security_groups"
 
   project_name = var.project_name
   vpc_id       = module.vpc.vpc_id
@@ -47,7 +42,7 @@ module "security_groups" {
 # MÓDULO: Instancias EC2
 # ============================================================
 module "ec2" {
-  source = "./modules/ec2"
+  source = "./ec2"
 
   project_name          = var.project_name
   instance_type         = var.instance_type

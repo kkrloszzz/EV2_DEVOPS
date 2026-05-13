@@ -1,9 +1,3 @@
-# ============================================================
-# terraform.tfvars — Valores de las variables
-# IMPORTANTE: Completar key_name y my_ip antes de aplicar
-# No subir este archivo a GitHub si contiene datos sensibles
-# ============================================================
-
 aws_region   = "us-east-1"
 project_name = "innovatech"
 
@@ -15,10 +9,10 @@ availability_zone   = "us-east-1a"
 
 # EC2
 instance_type = "t2.micro"
-ami_id        = "ami-0c02fb55956c7d316"  # Amazon Linux 2023 - us-east-1
+ami_id        = "ami-0c02fb55956c7d316"  
 
-# COMPLETAR: nombre del par de claves creado en AWS (sin .pem)
-key_name = "mi-clave-innovatech"
 
-# COMPLETAR: tu IP pública (ejecutar: curl ifconfig.me)
-my_ip = "0.0.0.0/0"  # Cambiar por tu IP real: "x.x.x.x/32"
+key_name = "claves-innovatech"
+
+
+my_ip = "192.168.1.120/32" 

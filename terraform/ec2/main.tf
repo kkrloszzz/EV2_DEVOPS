@@ -1,11 +1,5 @@
-# ============================================================
-# modules/ec2/main.tf
-# Instancias EC2: Frontend (pública) + Backend (privada)
-# ============================================================
-
 # ──────────────────────────────────────────────
 # User Data — Script de instalación de Docker
-# Se ejecuta automáticamente al iniciar la instancia
 # ──────────────────────────────────────────────
 locals {
   user_data_docker = <<-EOF
@@ -34,7 +28,6 @@ locals {
 
 # ──────────────────────────────────────────────
 # EC2 Frontend — Subred Pública
-# Sirve la aplicación React en el puerto 80
 # ──────────────────────────────────────────────
 resource "aws_instance" "frontend" {
   ami                         = var.ami_id
@@ -69,7 +62,6 @@ resource "aws_instance" "frontend" {
 
 # ──────────────────────────────────────────────
 # EC2 Backend — Subred Privada
-# Sirve la API Spring Boot (8080/8081) + MySQL
 # ──────────────────────────────────────────────
 resource "aws_instance" "backend" {
   ami                         = var.ami_id
@@ -77,7 +69,7 @@ resource "aws_instance" "backend" {
   subnet_id                   = var.subnet_private_id
   vpc_security_group_ids      = [var.sg_backend_id]
   key_name                    = var.key_name
-  associate_public_ip_address = false   # Sin IP pública — subred privada
+  associate_public_ip_address = false   
 
   # Instalar Docker automáticamente al iniciar
   user_data = local.user_data_docker

@@ -1,7 +1,3 @@
-# ============================================================
-# modules/vpc/main.tf
-# VPC + Subnets + Internet Gateway + Route Tables
-# ============================================================
 
 # ──────────────────────────────────────────────
 # VPC Principal
@@ -86,7 +82,6 @@ resource "aws_route_table_association" "public" {
 
 # ──────────────────────────────────────────────
 # Route Table Privada
-# Sin salida directa a Internet (solo tráfico interno VPC)
 # ──────────────────────────────────────────────
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id

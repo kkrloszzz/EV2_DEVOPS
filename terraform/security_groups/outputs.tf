@@ -1,6 +1,3 @@
-# ============================================================
-# modules/security_groups/outputs.tf
-# ============================================================
 
 output "sg_frontend_id" {
   description = "ID del Security Group del Frontend"

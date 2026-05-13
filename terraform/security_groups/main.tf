@@ -1,7 +1,3 @@
-# ============================================================
-# modules/security_groups/main.tf
-# Security Groups para Frontend y Backend
-# ============================================================
 
 # ──────────────────────────────────────────────
 # Security Group — EC2 Frontend (subred pública)
