@@ -1,17 +1,18 @@
-# Stage 1: Build
-FROM node:18-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
 
-# Stage 2: Runtime (Limpieza de capas) [cite: 91, 129]
-FROM node:18-alpine
+FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
-COPY --from=build /app ./
-# Instalación solo de dependencias de producción
-RUN npm prune --production 
-# Uso de usuario no-root incluido en la imagen de node [cite: 91]
-USER node
-EXPOSE 3000
-CMD ["npm", "start"]
+
+COPY Springboot-API-REST-DESPACHO ./Springboot-API-REST-DESPACHO
+
+WORKDIR /app/Springboot-API-REST-DESPACHO
+
+RUN mvn clean package -DskipTests
+
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+
+COPY --from=build /app/Springboot-API-REST-DESPACHO/target/*.jar app.jar
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "app.jar"]
