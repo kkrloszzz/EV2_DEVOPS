@@ -142,7 +142,7 @@ resource "aws_ecs_task_definition" "task_frontend" {
 
   name   = "frontend-container"
 
-  image   = "TU_CUENTA_AWS.dkr.ecr.us-east-1.amazonaws.com/innovatech-frontend:latest" # <-- REEMPLAZAR
+  image   = "730335299009.dkr.ecr.us-east-1.amazonaws.com/innovatech-frontend:latest" # <-- REEMPLAZAR
 
   essential = true
 
