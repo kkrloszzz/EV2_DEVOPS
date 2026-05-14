@@ -1,97 +1,170 @@
-version: "3.9"
-
 services:
+
+
 
  # ── BASE DE DATOS ─────────────────────────────────────────
 
  db:
-  image: mysql:8.0
-  container_name: mysql_db
-  
-  environment:
 
-   MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-   MYSQL_DATABASE: ${MYSQL_DATABASE}
-   MYSQL_USER: ${MYSQL_USER}
-   MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+ image: mysql:8.0
 
-  volumes:
+ container_name: mysql_db
 
-   - mysql_data:/var/lib/mysql
+ environment:
 
-  healthcheck:
+  MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 
-   test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
-   interval: 10s
-   timeout: 5s
-   retries: 10
+  MYSQL_DATABASE: ${MYSQL_DATABASE}
 
-  restart: unless-stopped
+  MYSQL_USER: ${MYSQL_USER}
 
-  networks:
+  MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 
-   - app_net
+ volumes:
 
- # ── BACKEND (Spring Boot) ─────────────────────────────────
+  - mysql_data:/var/lib/mysql
 
- backend:
+ healthcheck:
 
-  build:
-   context: ./backend
-   dockerfile: Dockerfile
-  image: innovatech-backend:latest
+  test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
 
-  container_name: backend_app
+  interval: 10s
 
-  ports:
+  timeout: 5s
 
-   - "8080:8080"
+  retries: 10
 
-  environment:
+ restart: unless-stopped
 
-   SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-   SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
-   SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
-   SPRING_JPA_HIBERNATE_DDL_AUTO: update
-  
-  depends_on:
-   db:
-    condition: service_healthy
-  restart: unless-stopped
+ networks:
 
-  networks:
-   - app_net
+  - app_net
 
 
 
- # ── FRONTEND (React + Nginx) ──────────────────────────────
+ # ── BACKEND VENTAS ────────────────────────────────────────
+
+ backend-ventas:
+
+ build:
+
+  context: ./back-Ventas_SpringBoot
+
+  dockerfile: Dockerfile
+
+ image: innovatech-backend-ventas:latest
+
+ container_name: backend_ventas_app
+
+ ports:
+
+  - "3000:3000"
+
+ environment:
+
+  # Nota: Si este backend de Node no usa estas variables exactas de Spring Boot, 
+
+  # puedes cambiarlas por las variables de entorno que requiera tu app de Express/Node.
+
+  SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+
+  SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+
+  SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+
+  SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+ depends_on:
+
+  db:
+
+  condition: service_healthy
+
+ restart: unless-stopped
+
+ networks:
+
+  - app_net
+
+
+
+ # ── BACKEND DESPACHOS ─────────────────────────────────────
+
+ backend-despachos:
+
+ build:
+
+  context: ./back-Despachos_SpringBoot
+
+  dockerfile: Dockerfile
+
+ image: innovatech-backend-despachos:latest
+
+ container_name: backend_despachos_app
+
+ ports:
+
+  - "8080:8080"
+
+ environment:
+
+  SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+
+  SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+
+  SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+
+  SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+ depends_on:
+
+  db:
+
+  condition: service_healthy
+
+ restart: unless-stopped
+
+ networks:
+
+  - app_net
+
+
+
+ # ── FRONTEND (Vite + React + Nginx) ────────────────────────
 
  frontend:
 
-  build:
+ build:
 
-   context: ./frontend
-   dockerfile: Dockerfile
-  image: innovatech-frontend:latest
-  
-  container_name: frontend_app
-  ports:
+  context: ./front_despacho
 
-   - "80:80"
+  dockerfile: Dockerfile
 
-  environment:
+ image: innovatech-frontend:latest
 
-   VITE_API_URL: http://backend:8080/api
+ container_name: frontend_app
 
-  depends_on:
+ ports:
 
-   - backend
+  - "80:80"
 
-  restart: unless-stopped
+ environment:
 
-  networks:
+  # Ajustado para que el frontend sepa a dónde consultar (ej: al puerto 8080 de despachos)
 
-   - app_net
+  VITE_API_URL: http://localhost:8080/api
+
+ depends_on:
+
+  - backend-ventas
+
+  - backend-despachos
+
+ restart: unless-stopped
+
+ networks:
+
+  - app_net
 
 
 
@@ -99,15 +172,11 @@ services:
 
 # Named volume: los datos de MySQL persisten aunque el contenedor se elimine o reinicie.
 
-# Se elige named volume por sobre bind mount porque Docker gestiona la ubicación
-
-# automáticamente y es más portable entre entornos (local, EC2, CI/CD).
-
 volumes:
 
  mysql_data:
 
-  driver: local
+ driver: local
 
 
 
@@ -115,10 +184,8 @@ volumes:
 
 # Red interna bridge: los servicios se comunican por nombre de contenedor
 
-# sin exponer puertos innecesarios al exterior.
-
 networks:
 
  app_net:
 
-  driver: bridge
+ driver: bridge
