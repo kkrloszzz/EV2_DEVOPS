@@ -65,9 +65,17 @@ variable "ami_id" {
 # ──────────────────────────────────────────────
 # Seguridad
 # ──────────────────────────────────────────────
+variable "sg_frontend_id" {
+  description = "ID del Security Group del Frontend"
+  type        = string
+}
+
+variable "sg_backend_id" {
+  description = "ID del Security Group del Backend"
+  type        = string
+}
+
 variable "my_ip" {
   description = "Tu IP pública para permitir SSH (formato: x.x.x.x/32)"
   type        = string
-  # Ejemplo: "200.10.20.30/32"
-  # Obtener con: curl ifconfig.me
 }

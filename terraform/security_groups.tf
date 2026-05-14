@@ -5,7 +5,7 @@
 resource "aws_security_group" "frontend" {
   name        = "${var.project_name}-sg-frontend"
   description = "Security Group para instancia EC2 Frontend"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.main.id
 
   # HTTP desde Internet (acceso público a la app)
   ingress {
@@ -56,7 +56,7 @@ resource "aws_security_group" "frontend" {
 resource "aws_security_group" "backend" {
   name        = "${var.project_name}-sg-backend"
   description = "Security Group para instancia EC2 Backend"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.main.id
 
   # Puerto 8081 (API Despachos) — solo desde el SG Frontend
   ingress {

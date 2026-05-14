@@ -32,8 +32,8 @@ locals {
 resource "aws_instance" "frontend" {
   ami                         = var.ami_id
   instance_type               = var.instance_type
-  subnet_id                   = var.subnet_public_id
-  vpc_security_group_ids      = [var.sg_frontend_id]
+  subnet_id                   = aws_subnet.public.id
+  vpc_security_group_ids      = [aws_security_group.frontend.id]
   key_name                    = var.key_name
   associate_public_ip_address = true
 
@@ -66,8 +66,8 @@ resource "aws_instance" "frontend" {
 resource "aws_instance" "backend" {
   ami                         = var.ami_id
   instance_type               = var.instance_type
-  subnet_id                   = var.subnet_private_id
-  vpc_security_group_ids      = [var.sg_backend_id]
+  subnet_id                   = aws_subnet.private.id
+  vpc_security_group_ids      = [aws_security_group.backend.id]
   key_name                    = var.key_name
   associate_public_ip_address = false   
 
