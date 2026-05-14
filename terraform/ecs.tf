@@ -78,7 +78,7 @@ resource "aws_ecs_task_definition" "task_ventas" {
 
   name   = "ventas-container"
 
-  image   = "TU_CUENTA_AWS.dkr.ecr.us-east-1.amazonaws.com/innovatech-backend-ventas:latest" # <-- REEMPLAZAR
+  image   = "730335299009.dkr.ecr.us-east-1.amazonaws.com/innovatech-backend-ventas:latest" # <-- REEMPLAZAR
 
   essential = true
 
@@ -110,7 +110,7 @@ resource "aws_ecs_task_definition" "task_despachos" {
 
   name   = "despachos-container"
 
-  image   = "TU_CUENTA_AWS.dkr.ecr.us-east-1.amazonaws.com/innovatech-backend-despachos:latest" # <-- REEMPLAZAR
+  image   = "730335299009.dkr.ecr.us-east-1.amazonaws.com/innovatech-backend-despachos:latest" # <-- REEMPLAZAR
 
   essential = true
 
