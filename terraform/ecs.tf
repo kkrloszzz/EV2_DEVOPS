@@ -146,8 +146,8 @@ resource "aws_ecs_task_definition" "task_despachos" {
   family                   = "despachos-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = "512"
-  memory                   = "1024"
+  cpu                      = "1024" 
+  memory                   = "2048"
   execution_role_arn       = data.aws_iam_role.lab_role.arn
   task_role_arn            = data.aws_iam_role.lab_role.arn
 
@@ -155,7 +155,7 @@ resource "aws_ecs_task_definition" "task_despachos" {
     {
       name      = "mysql-despachos"
       image     = "mysql:8.0"
-      essential = false
+      essential = true
       portMappings = [{ containerPort = 3306, hostPort = 3306, protocol = "tcp" }]
       environment = [
         { name = "MYSQL_ROOT_PASSWORD", value = "rootpass123" },
@@ -185,12 +185,15 @@ resource "aws_ecs_task_definition" "task_despachos" {
       essential = true
       portMappings = [{ containerPort = 8081, hostPort = 8081, protocol = "tcp" }]
       environment = [
-        { name = "DB_ENDPOINT", value = "localhost" },
+        { name = "DB_ENDPOINT", value = "127.0.0.1" },
         { name = "DB_PORT",     value = "3306" },
         { name = "DB_NAME",     value = "despachos_db" },
         { name = "DB_USERNAME", value = "despacho_user" },
         { name = "DB_PASSWORD", value = "despacho_pass123" },
-        { name = "SPRING_PROFILES_ACTIVE", value = "prod" }
+        { name = "SPRING_PROFILES_ACTIVE", value = "prod" },
+        { name = "SPRING_DATASOURCE_URL", value = "jdbc:mysql://127.0.0.1:3306/despachos_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC" },
+        { name = "SPRING_DATASOURCE_USERNAME", value = "despacho_user" },
+        { name = "SPRING_DATASOURCE_PASSWORD", value = "despacho_pass123" }
       ]
       dependsOn = [{ containerName = "mysql-despachos", condition = "HEALTHY" }]
       logConfiguration = {
@@ -210,8 +213,8 @@ resource "aws_ecs_task_definition" "task_ventas" {
   family                   = "ventas-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = "512"
-  memory                   = "1024"
+  cpu                      = "1024"
+  memory                   = "2048"
   execution_role_arn       = data.aws_iam_role.lab_role.arn
   task_role_arn            = data.aws_iam_role.lab_role.arn
 
@@ -219,7 +222,7 @@ resource "aws_ecs_task_definition" "task_ventas" {
     {
       name      = "mysql-ventas"
       image     = "mysql:8.0"
-      essential = false
+      essential = true
       portMappings = [{ containerPort = 3306, hostPort = 3306, protocol = "tcp" }]
       environment = [
         { name = "MYSQL_ROOT_PASSWORD", value = "rootpass123" },
@@ -249,12 +252,15 @@ resource "aws_ecs_task_definition" "task_ventas" {
       essential = true
       portMappings = [{ containerPort = 8080, hostPort = 8080, protocol = "tcp" }]
       environment = [
-        { name = "DB_ENDPOINT", value = "localhost" },
+        { name = "DB_ENDPOINT", value = "127.0.0.1" },
         { name = "DB_PORT",     value = "3306" },
         { name = "DB_NAME",     value = "ventas_db" },
         { name = "DB_USERNAME", value = "ventas_user" },
         { name = "DB_PASSWORD", value = "ventas_pass123" },
-        { name = "SPRING_PROFILES_ACTIVE", value = "prod" }
+        { name = "SPRING_PROFILES_ACTIVE", value = "prod" },
+        { name = "SPRING_DATASOURCE_URL", value = "jdbc:mysql://127.0.0.1:3306/ventas_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC" },
+        { name = "SPRING_DATASOURCE_USERNAME", value = "ventas_user" },
+        { name = "SPRING_DATASOURCE_PASSWORD", value = "ventas_pass123" }
       ]
       dependsOn = [{ containerName = "mysql-ventas", condition = "HEALTHY" }]
       logConfiguration = {
@@ -284,10 +290,6 @@ resource "aws_ecs_service" "svc_frontend" {
     security_groups  = [aws_security_group.ecs_tasks.id]
     assign_public_ip = true
   }
-
-  lifecycle {
-    ignore_changes = [task_definition]
-  }
 }
 
 resource "aws_ecs_service" "svc_despachos" {
@@ -302,10 +304,6 @@ resource "aws_ecs_service" "svc_despachos" {
     security_groups  = [aws_security_group.ecs_tasks.id]
     assign_public_ip = true
   }
-
-  lifecycle {
-    ignore_changes = [task_definition]
-  }
 }
 
 resource "aws_ecs_service" "svc_ventas" {
@@ -319,9 +317,5 @@ resource "aws_ecs_service" "svc_ventas" {
     subnets          = [aws_subnet.public.id]
     security_groups  = [aws_security_group.ecs_tasks.id]
     assign_public_ip = true
-  }
-
-  lifecycle {
-    ignore_changes = [task_definition]
   }
 }
