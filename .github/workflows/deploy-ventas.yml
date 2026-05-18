@@ -1,7 +1,7 @@
 name: CI/CD Backend Ventas
 
 # ============================================================
-# Trigger: Se activa con push en la rama deploy
+# Trigger: Se activa con push en la rama deploy--
 # ============================================================
 on:
   push:
