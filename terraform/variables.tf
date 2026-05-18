@@ -65,9 +65,9 @@ variable "ami_id" {
 # ──────────────────────────────────────────────
 # Seguridad
 # ──────────────────────────────────────────────
+
+
 variable "my_ip" {
   description = "Tu IP pública para permitir SSH (formato: x.x.x.x/32)"
   type        = string
-  # Ejemplo: "200.10.20.30/32"
-  # Obtener con: curl ifconfig.me
 }
