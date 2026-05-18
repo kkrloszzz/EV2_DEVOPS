@@ -6,8 +6,10 @@ name: CI/CD Backend Despachos
 on:
   push:
     branches:
+      
       - main
-
+    paths:
+      - 'Springboot-API-REST-DESPACHO/**' # Solo se ejecuta si cambia algo aquí
 env:
   AWS_REGION: us-east-1
   CLUSTER: innovatech-cluster
