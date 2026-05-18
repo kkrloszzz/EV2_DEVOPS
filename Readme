@@ -1,6 +1,7 @@
 # Innovatech — Plataforma Logística de Microservicios
 
-**Descripción** Infraestructura y código gestionado para desplegar:
+**Descripción** 
+Infraestructura y código gestionado para desplegar:
 
 - Dos microservicios Backend (Ventas y Despachos) en Spring Boot.
 - Un Frontend servido a través de Nginx.
@@ -14,7 +15,7 @@
 
 ## 🧭 Estructura del proyecto
 
-```text
+```
 EV2_DEVOPS/
 ├── back-Despachos_SpringBoot/
 ├── back-Ventas_SpringBoot/
@@ -51,26 +52,26 @@ docker-compose up -d --build
 
 2. Inicializa Terraform:
 
-```bash
+```
 cd terraform
 terraform init
 ```
 
 Verifica el plan de infraestructura:
 
-```bash
+```
 terraform plan
 ```
 
 Aplica los cambios en AWS:
 
-```bash
+```
 terraform apply
 ```
 
 3. Sube las imágenes Docker a AWS ECR (Reemplaza TU_ID_CUENTA):
 
-```bash
+```
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin TU_ID_CUENTA.dkr.ecr.us-east-1.amazonaws.com
 
 docker tag innovatech-backend-ventas:latest TU_ID_[CUENTA.dkr.ecr.us-east-1.amazonaws.com/innovatech-backend-ventas:latest](https://CUENTA.dkr.ecr.us-east-1.amazonaws.com/innovatech-backend-ventas:latest)
@@ -95,7 +96,6 @@ Soporte integrado para despliegues en laboratorios educativos usando el rol pree
 
 ## 🧭 Diagrama de arquitectura
 
-![Diagrama de arquitectura](/diagrama_arquitectura.png)
 
 ## 📌 Mejores prácticas incluidas
 
