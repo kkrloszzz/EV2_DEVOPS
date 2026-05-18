@@ -6,7 +6,7 @@ name: CI/CD Backend Despachos
 on:
   push:
     branches:
-      - deploy
+      - main
 
 env:
   AWS_REGION: us-east-1
