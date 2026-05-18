@@ -1,7 +1,7 @@
 name: CI/CD Backend Despachos
 
 # ============================================================
-# Trigger: Solo se activa con push en la rama deploy
+# Trigger: Solo se activa con push en la rama deploy---
 # ============================================================
 on:
   push:
