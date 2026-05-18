@@ -69,7 +69,7 @@ Aplica los cambios en AWS:
 terraform apply
 ```
 
-3. Sube las imágenes Docker a AWS ECR (Reemplaza TU_ID_CUENTA):
+3. Sube las imágenes Docker a AWS ECR:
 
 ```
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin TU_ID_CUENTA.dkr.ecr.us-east-1.amazonaws.com
@@ -94,7 +94,6 @@ Se gestiona el flujo garantizando que ECS auto-despliegue los contenedores tras 
 
 Soporte integrado para despliegues en laboratorios educativos usando el rol preexistente `LabRole`.
 
-## 🧭 Diagrama de arquitectura
 
 
 ## 📌 Mejores prácticas incluidas
