@@ -46,7 +46,7 @@ EV2_DEVOPS/
 
 1. Levanta el entorno de desarrollo local (opcional):
 
-```bash
+```
 docker-compose up -d --build
 ```
 
